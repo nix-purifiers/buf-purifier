@@ -1,0 +1,152 @@
+{
+  "entries": [
+    {
+      "buf": {
+        "commit": "511051f7f4374c3ca873b53ae68a9288",
+        "digest": "b5:a4a2d4d808a25984cced60769c822c5d496ef0b740f56ac0c9e6b97aaa25b86a9332a00ffd74e0cd202be29e91bd3edfb0bf2ba4dacfe48ff2d8217f9986e3c8",
+        "name": "buf.build/bufbuild/protovalidate"
+      },
+      "hash": "sha256-ebWJCBEeD7TWA+eDcow6N1anFYiAn+P1cI0GnJeYcaQ=",
+      "mirrors": [],
+      "path": "b5/buf.build/bufbuild/protovalidate/511051f7f4374c3ca873b53ae68a9288",
+      "url": "bsr:buf.build/bufbuild/protovalidate:511051f7f4374c3ca873b53ae68a9288"
+    },
+    {
+      "buf": {
+        "commit": "2456e1dfc0664e7596d7f3b20f4b62d0",
+        "digest": "b5:412ce915a722e7e653426107531cfbfea5a263afd438b2778c03f1dc8f75628e5baf791e513324e5ccff0197be2f91aa174629b8353966d38c295bd86bc2cebb",
+        "name": "buf.build/cncf/xds"
+      },
+      "hash": "sha256-2x6LJr4k1M/gC/QzyRtyK1o8Nl9BRjjfTIs5si9p54M=",
+      "mirrors": [],
+      "path": "b5/buf.build/cncf/xds/2456e1dfc0664e7596d7f3b20f4b62d0",
+      "url": "bsr:buf.build/cncf/xds:2456e1dfc0664e7596d7f3b20f4b62d0"
+    },
+    {
+      "buf": {
+        "commit": "5c0f5fe1eee24ac1b504c6ded8ca922f",
+        "digest": "b5:540ea0fa9eecc56264b2e578e6c3f7d9835423d0b6045b0a3af3731143603cad0c6842fd6be31b3b04281fd2e5e8d7795339fe0504e0066ca403e79e0c1ee69b",
+        "name": "buf.build/envoyproxy/envoy"
+      },
+      "hash": "sha256-GdktnORtgxEHPafLSA/9eZDZBD/waJgEm062sDf5iAo=",
+      "mirrors": [],
+      "path": "b5/buf.build/envoyproxy/envoy/5c0f5fe1eee24ac1b504c6ded8ca922f",
+      "url": "bsr:buf.build/envoyproxy/envoy:5c0f5fe1eee24ac1b504c6ded8ca922f"
+    },
+    {
+      "buf": {
+        "commit": "daf171c6cdb54629b5f51e345a79e4dd",
+        "digest": "b5:c745e1521879f43740230b1df673d0729f55704efefdcfc489d4a0a2d40c92a26cacfeab62813403040a8b180142d53b398c7ca784a065e43823605ee49681de",
+        "name": "buf.build/envoyproxy/protoc-gen-validate"
+      },
+      "hash": "sha256-D1fTAwv470UK1S9GD3rEXkhqiuR5wpqcAvgdr7+40is=",
+      "mirrors": [],
+      "path": "b5/buf.build/envoyproxy/protoc-gen-validate/daf171c6cdb54629b5f51e345a79e4dd",
+      "url": "bsr:buf.build/envoyproxy/protoc-gen-validate:daf171c6cdb54629b5f51e345a79e4dd"
+    },
+    {
+      "buf": {
+        "commit": "96eff7bcf453468dbd44b80598bfe1bf",
+        "digest": "b5:660c244ec1e8a0f26c5431e1901f1d52d322c7ee3fd240cb6832f44d0694384a36ded008af457a9e5268c73adfa00170e972ac4fe44752a693424b3479f30b82",
+        "name": "buf.build/google/cel-spec"
+      },
+      "hash": "sha256-oiPbwOOlOXYZO5932tv1N672fR26wiUbTQ1D61b9zE4=",
+      "mirrors": [],
+      "path": "b5/buf.build/google/cel-spec/96eff7bcf453468dbd44b80598bfe1bf",
+      "url": "bsr:buf.build/google/cel-spec:96eff7bcf453468dbd44b80598bfe1bf"
+    },
+    {
+      "buf": {
+        "commit": "8ac61b9e502343289c8c42b17aa5b245",
+        "digest": "b5:0318e73c2dec49c5742f0c119642a5cb7fcd9e2d5200a2b478bc1efd93f7aaa06d5431f5e1e5713095101fc990b026a806fa429af80432ec8d1ceefbe07bb817",
+        "name": "buf.build/googleapis/googleapis"
+      },
+      "hash": "sha256-ZydVVd0u1amQ43U5OWXya7aRnNTV/mBGt38PJMB1SjM=",
+      "mirrors": [],
+      "path": "b5/buf.build/googleapis/googleapis/8ac61b9e502343289c8c42b17aa5b245",
+      "url": "bsr:buf.build/googleapis/googleapis:8ac61b9e502343289c8c42b17aa5b245"
+    },
+    {
+      "buf": {
+        "commit": "f3a7b1f1162b4196b54df827a0fc8e19",
+        "digest": "b5:b3532eff003792ca6cf90f7d75cf85bcee86acd19d602364dc4bd68d68514a546e39c500a81479194567ed7c4699ceda3fabda5ab16650bf8a9f501741283d04",
+        "name": "buf.build/opentelemetry/opentelemetry"
+      },
+      "hash": "sha256-/n5DCYgUVeSw5w1M6Go76ZqtsTQwJmB8sH8eQCx12YE=",
+      "mirrors": [],
+      "path": "b5/buf.build/opentelemetry/opentelemetry/f3a7b1f1162b4196b54df827a0fc8e19",
+      "url": "bsr:buf.build/opentelemetry/opentelemetry:f3a7b1f1162b4196b54df827a0fc8e19"
+    },
+    {
+      "buf": {
+        "commit": "86bbdf60caf04d4aa01231edc8312e17",
+        "digest": "b5:55926ab9ae7b36e2720ac5b51ef4df38fd0b05cff84b15637915d83d5b7142bb73d7843a44628ea5e73fff8856655ec5e927b4688fa53e152491108be400c4a1",
+        "name": "buf.build/prometheus/client-model"
+      },
+      "hash": "sha256-3nzHOj+25HQEw0VD/zMkeHITgVpNc00qMFbopk2I/uE=",
+      "mirrors": [],
+      "path": "b5/buf.build/prometheus/client-model/86bbdf60caf04d4aa01231edc8312e17",
+      "url": "bsr:buf.build/prometheus/client-model:86bbdf60caf04d4aa01231edc8312e17"
+    }
+  ],
+  "extraInputs": [],
+  "inputs": {
+    "buf.gen.yaml": {
+      "sha256": "1cef57d94b3dae8c01cfe5910a0ee3008f7381fb7a377af635b9a38cc960b629"
+    },
+    "buf.lock": {
+      "sha256": "dba4b173ac4b3b5ba237b8bbc849f0f0ff718fcdbfb68545649b017691873f80"
+    },
+    "buf.yaml": {
+      "sha256": "6cf3255253a419b2d2687a3ab1da4df5481ce63f2b2c9c8f909e42770ef8104f"
+    }
+  },
+  "native": {
+    "deps": [
+      {
+        "commit": "511051f7f4374c3ca873b53ae68a9288",
+        "digest": "b5:a4a2d4d808a25984cced60769c822c5d496ef0b740f56ac0c9e6b97aaa25b86a9332a00ffd74e0cd202be29e91bd3edfb0bf2ba4dacfe48ff2d8217f9986e3c8",
+        "name": "buf.build/bufbuild/protovalidate"
+      },
+      {
+        "commit": "2456e1dfc0664e7596d7f3b20f4b62d0",
+        "digest": "b5:412ce915a722e7e653426107531cfbfea5a263afd438b2778c03f1dc8f75628e5baf791e513324e5ccff0197be2f91aa174629b8353966d38c295bd86bc2cebb",
+        "name": "buf.build/cncf/xds"
+      },
+      {
+        "commit": "5c0f5fe1eee24ac1b504c6ded8ca922f",
+        "digest": "b5:540ea0fa9eecc56264b2e578e6c3f7d9835423d0b6045b0a3af3731143603cad0c6842fd6be31b3b04281fd2e5e8d7795339fe0504e0066ca403e79e0c1ee69b",
+        "name": "buf.build/envoyproxy/envoy"
+      },
+      {
+        "commit": "daf171c6cdb54629b5f51e345a79e4dd",
+        "digest": "b5:c745e1521879f43740230b1df673d0729f55704efefdcfc489d4a0a2d40c92a26cacfeab62813403040a8b180142d53b398c7ca784a065e43823605ee49681de",
+        "name": "buf.build/envoyproxy/protoc-gen-validate"
+      },
+      {
+        "commit": "96eff7bcf453468dbd44b80598bfe1bf",
+        "digest": "b5:660c244ec1e8a0f26c5431e1901f1d52d322c7ee3fd240cb6832f44d0694384a36ded008af457a9e5268c73adfa00170e972ac4fe44752a693424b3479f30b82",
+        "name": "buf.build/google/cel-spec"
+      },
+      {
+        "commit": "8ac61b9e502343289c8c42b17aa5b245",
+        "digest": "b5:0318e73c2dec49c5742f0c119642a5cb7fcd9e2d5200a2b478bc1efd93f7aaa06d5431f5e1e5713095101fc990b026a806fa429af80432ec8d1ceefbe07bb817",
+        "name": "buf.build/googleapis/googleapis"
+      },
+      {
+        "commit": "f3a7b1f1162b4196b54df827a0fc8e19",
+        "digest": "b5:b3532eff003792ca6cf90f7d75cf85bcee86acd19d602364dc4bd68d68514a546e39c500a81479194567ed7c4699ceda3fabda5ab16650bf8a9f501741283d04",
+        "name": "buf.build/opentelemetry/opentelemetry"
+      },
+      {
+        "commit": "86bbdf60caf04d4aa01231edc8312e17",
+        "digest": "b5:55926ab9ae7b36e2720ac5b51ef4df38fd0b05cff84b15637915d83d5b7142bb73d7843a44628ea5e73fff8856655ec5e927b4688fa53e152491108be400c4a1",
+        "name": "buf.build/prometheus/client-model"
+      }
+    ],
+    "version": "v2"
+  },
+  "purifier": "buf",
+  "sdk": "c9e559eb60ed103e07225d461b1e8e3b5d9f1e1c156089b61dbaefd6b627a8d0",
+  "version": 1
+}

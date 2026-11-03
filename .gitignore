@@ -1,0 +1,8 @@
+result*
+cli
+.buf-purifier/
+__pycache__/
+*.pyc
+*.log
+/examples/minimal/gen/
+*.binpb

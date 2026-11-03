@@ -1,0 +1,5 @@
+syntax = "proto3";
+package proof.v1;
+import "buf/validate/validate.proto";
+import "envoy/type/v3/percent.proto";
+message Proof { int32 answer = 1 [(buf.validate.field).int32.const = 42]; envoy.type.v3.FractionalPercent fraction = 2; }
