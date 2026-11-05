@@ -16,6 +16,7 @@
   src,
   lockFile ? src + "/buf-purifier.lock.json",
   fetchers ? { },
+  schemaEntrypoints ? [ ],
   nativeBuildInputs ? [ ],
   doCheck ? false,
   checkCommand ? "",
@@ -35,7 +36,7 @@ let
         "__pycache__"
       ]);
   };
-  project =
+  builtProject =
     runCommand "buf-project"
       {
         nativeBuildInputs = [
@@ -57,6 +58,7 @@ let
         test -e ${prepared.output}/manifest.json
         mkdir -p "$out"
         buf build --output "$out/image.binpb"
+        buf export . --all --output "$out/schemas"
         buf lint
         if [ -f buf.gen.yaml ]; then
           buf generate --output "$out"
@@ -65,6 +67,23 @@ let
         mkdir -p "$out/source"
         cp -pr ${source}/. "$out/source/"
       '';
+  projections = purifier.resourceProjections {
+    producer = builtProject;
+    roots."." = "schemas";
+    schema =
+      if schemaEntrypoints == [ ] then
+        null
+      else
+        {
+          format = "protobuf";
+          entrypoints = schemaEntrypoints;
+        };
+    inherit runCommand;
+    python3 = python;
+  };
+  project = builtProject // {
+    inherit projections;
+  };
   release =
     runCommand "buf-native-release"
       {
@@ -87,6 +106,6 @@ in
     environment = prepared.output;
   };
   tests = project;
-  inherit release;
+  inherit release projections;
   fetches = lock.entries;
 }

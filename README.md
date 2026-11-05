@@ -73,6 +73,24 @@ pkgs.buf-purifier.buildBufProject {
 It exposes evaluation-known `packages`, `tests`, `release` and `fetches`. The
 project output includes the native descriptor image and generated sources.
 
+## Resource projections
+
+`buildBufProject` exports the workspace and its imported schemas through native
+`buf export` into `schemas/`. Both the result and `packages.project` expose
+`projections.resources`, `projections.web`, and `projections.java-resources`.
+Use `.directory` as a protoc import root, `.documentRoot` for static serving,
+and `.classPath` for a Java resource JAR. Native import paths are preserved;
+source/configuration files outside the schema export are excluded.
+
+Pass `schemaEntrypoints = [ "proof/v1/proof.proto" ];` to record explicit
+Protobuf entrypoints in the catalog. Buf resolves the locked schema dependencies;
+the shared resource adapter itself does not infer an import closure. Built-in
+Protobuf well-known types still come from the selected compiler/runtime SDK.
+The check compiles the exported workspace plus imported protovalidate/Envoy
+schemas with ordinary protoc and round-trips generated Python messages using
+the same pinned SDK. Generated sources remain native outputs; no installable
+language package or runtime-independent binding publication is claimed.
+
 ## Credits
 
 The purifier idea was inspired by nixcloud's

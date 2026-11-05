@@ -51,6 +51,7 @@
           p = pkgsFor system;
           b = p.buf-purifier.buildBufProject {
             src = ./examples/minimal;
+            schemaEntrypoints = [ "proof/v1/proof.proto" ];
             doCheck = true;
             checkCommand = ''test -s "$out/gen/proof/v1/proof.pb.cc"'';
           };
@@ -58,6 +59,14 @@
         {
           inherit (b.packages) environment project;
           release = b.release;
+          schema = import ./tests/schema-consumer.nix {
+            pkgs = p;
+            projection = b.projections.resources;
+          };
+          resources = import ./tests/resource-consumer.nix {
+            pkgs = p;
+            projection = b.projections.resources;
+          };
           cli = self.packages.${system}.default;
         }
       );
