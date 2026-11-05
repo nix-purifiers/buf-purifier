@@ -6,6 +6,7 @@ in
 pkgs.runCommand "buf-generated-python-ordinary-pip"
   {
     nativeBuildInputs = [ python ];
+    passthru = { inherit projection; };
   }
   ''
     export HOME="$TMPDIR/home" PIP_DISABLE_PIP_VERSION_CHECK=1

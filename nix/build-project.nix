@@ -113,7 +113,7 @@ let
     resourceProjections
     // lib.optionalAttrs (pythonPackage != null) (
       purifier.pythonProjections {
-        producer = builtProject;
+        producer = pythonBindings;
         repository = pythonBindings.dist;
         runtimeRepository = python3Packages.protobuf.dist;
         inherit runCommand;
@@ -160,7 +160,9 @@ assert
     environment = prepared.output;
   }
   // lib.optionalAttrs (pythonPackage != null) {
-    python-bindings = pythonBindings;
+    python-bindings = pythonBindings // {
+      projections.python = projections.python;
+    };
   };
   tests = project;
   inherit release projections;
