@@ -52,6 +52,10 @@
           b = p.buf-purifier.buildBufProject {
             src = ./examples/minimal;
             schemaEntrypoints = [ "proof/v1/proof.proto" ];
+            pythonPackage = {
+              name = "proof-schemas";
+              version = "1.0.0";
+            };
             doCheck = true;
             checkCommand = ''test -s "$out/gen/proof/v1/proof.pb.cc"'';
           };
@@ -59,6 +63,10 @@
         {
           inherit (b.packages) environment project;
           release = b.release;
+          python-bindings = import ./tests/python-bindings.nix {
+            pkgs = p;
+            projection = b.projections.python;
+          };
           schema = import ./tests/schema-consumer.nix {
             pkgs = p;
             projection = b.projections.resources;
