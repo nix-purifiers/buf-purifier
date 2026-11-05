@@ -91,6 +91,30 @@ schemas with ordinary protoc and round-trips generated Python messages using
 the same pinned SDK. Generated sources remain native outputs; no installable
 language package or runtime-independent binding publication is claimed.
 
+## Generated Python packages
+
+Pass `pythonPackage = { name = "proof-schemas"; version = "1.0.0"; };`
+to `buildBufProject` to generate Python bindings for the exported schema tree,
+including imported non-well-known schemas. This creates a real wheel with
+namespace packages and an exact dependency on the selected SDK's Protobuf
+Python runtime. The `projections.python` repository contains the projected wheel
+with its immutable Nix version plus the native runtime wheel. Compiler, schema
+closure, wheel builder and runtime derivations all participate in its identity.
+
+`packages.python-bindings` is the ordinary Nix Python package; use
+`projections.python` with native pip, or its catalog for a downstream purifier.
+For example, `python -m pip install --no-index --find-links /nix/store/...-python-projection proof-schemas`
+installs the generated package and its supplied runtime without downloads.
+The existing resource/Java schema views and native Buf outputs remain available.
+
+The check builds imported protovalidate/Envoy schemas, makes the wheel, and
+installs it with ordinary pip despite an available competing Protobuf99 wheel.
+It verifies the exact runtime version, installed module/extension origins and
+pip's selected wheel URLs/digests, then round-trips a generated message. This
+covers the selected pinned Python/compiler/runtime SDK; it does not promise
+other Python ABIs, Java bindings, remote generator plugins or arbitrary schema
+namespaces that overlap other installed packages.
+
 ## Credits
 
 The purifier idea was inspired by nixcloud's

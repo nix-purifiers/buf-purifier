@@ -9,6 +9,7 @@
   sdkVersion,
   tool,
   protobuf,
+  python3Packages,
   gnutar,
   gzip,
 }@scope:
@@ -17,6 +18,7 @@
   lockFile ? src + "/buf-purifier.lock.json",
   fetchers ? { },
   schemaEntrypoints ? [ ],
+  pythonPackage ? null,
   nativeBuildInputs ? [ ],
   doCheck ? false,
   checkCommand ? "",
@@ -67,7 +69,7 @@ let
         mkdir -p "$out/source"
         cp -pr ${source}/. "$out/source/"
       '';
-  projections = purifier.resourceProjections {
+  resourceProjections = purifier.resourceProjections {
     producer = builtProject;
     roots."." = "schemas";
     schema =
@@ -81,6 +83,43 @@ let
     inherit runCommand;
     python3 = python;
   };
+  generatedPython = runCommand "buf-generated-python-sources" { nativeBuildInputs = [ protobuf ]; } ''
+    mkdir -p "$out"
+    cd ${resourceProjections.resources.directory}
+    find . -name '*.proto' -print0 | sort -z | xargs -0 protoc -I . --python_out="$out"
+    cat > "$out/pyproject.toml" <<'TOML'
+    [build-system]
+    requires = ["setuptools"]
+    build-backend = "setuptools.build_meta"
+    [project]
+    name = ${builtins.toJSON pythonPackage.name}
+    version = ${builtins.toJSON pythonPackage.version}
+    dependencies = ["protobuf==${python3Packages.protobuf.version}"]
+    [tool.setuptools.packages.find]
+    where = ["."]
+    namespaces = true
+    TOML
+  '';
+  pythonBindings = python3Packages.buildPythonPackage {
+    pname = pythonPackage.name;
+    version = pythonPackage.version;
+    src = generatedPython;
+    pyproject = true;
+    build-system = [ python3Packages.setuptools ];
+    dependencies = [ python3Packages.protobuf ];
+    doCheck = false;
+  };
+  projections =
+    resourceProjections
+    // lib.optionalAttrs (pythonPackage != null) (
+      purifier.pythonProjections {
+        producer = builtProject;
+        repository = pythonBindings.dist;
+        runtimeRepository = python3Packages.protobuf.dist;
+        inherit runCommand;
+        python3 = python;
+      }
+    );
   project = builtProject // {
     inherit projections;
   };
@@ -99,11 +138,29 @@ let
         tar --sort=name --mtime=@1 --owner=0 --group=0 --numeric-owner -czf "$out/buf-source.tar.gz" -C source project
       '';
 in
+assert
+  pythonPackage == null
+  || (
+    builtins.isAttrs pythonPackage
+    &&
+      builtins.attrNames pythonPackage == [
+        "name"
+        "version"
+      ]
+    && builtins.isString pythonPackage.name
+    && pythonPackage.name != ""
+    && builtins.isString pythonPackage.version
+    && pythonPackage.version != ""
+  )
+  || throw "buf-purifier: pythonPackage requires an explicit distribution name and version";
 {
   packages = {
     default = project;
     inherit project;
     environment = prepared.output;
+  }
+  // lib.optionalAttrs (pythonPackage != null) {
+    python-bindings = pythonBindings;
   };
   tests = project;
   inherit release projections;
