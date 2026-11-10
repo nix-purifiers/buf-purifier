@@ -12,6 +12,7 @@
   python3Packages,
   gnutar,
   gzip,
+  callPackage,
 }@scope:
 {
   src,
@@ -19,6 +20,7 @@
   fetchers ? { },
   schemaEntrypoints ? [ ],
   pythonPackage ? null,
+  javaPackage ? null,
   nativeBuildInputs ? [ ],
   doCheck ? false,
   checkCommand ? "",
@@ -59,6 +61,12 @@ let
         '') lock.entries}
         test -e ${prepared.output}/manifest.json
         mkdir -p "$out"
+        ${lib.optionalString (javaPackage != null) ''
+          test "$(command -v protoc)" = ${protobuf}/bin/protoc
+          test "$(command -v buf)" = ${tool}/bin/buf
+          protoc --version > "$out/native-protoc-version.txt"
+          buf --version > "$out/native-buf-version.txt"
+        ''}
         buf build --output "$out/image.binpb"
         buf export . --all --output "$out/schemas"
         buf lint
@@ -119,7 +127,12 @@ let
         inherit runCommand;
         python3 = python;
       }
-    );
+    )
+    // lib.optionalAttrs (javaPackage != null) java.projections;
+  java = callPackage ./java-projections.nix { } {
+    producer = builtProject;
+    inherit javaPackage;
+  };
   project = builtProject // {
     inherit projections;
   };
@@ -138,6 +151,7 @@ let
         tar --sort=name --mtime=@1 --owner=0 --group=0 --numeric-owner -czf "$out/buf-source.tar.gz" -C source project
       '';
 in
+assert javaPackage == null || java.validated;
 assert
   pythonPackage == null
   || (
@@ -163,6 +177,12 @@ assert
     python-bindings = pythonBindings // {
       projections.python = projections.python;
     };
+  }
+  // lib.optionalAttrs (javaPackage != null) {
+    java-bindings = java.bindings // {
+      projections = java.projections;
+    };
+    java-runtime = java.runtimePackage;
   };
   tests = project;
   inherit release projections;

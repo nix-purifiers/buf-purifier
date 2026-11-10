@@ -20,6 +20,9 @@ jobs:
       - run: nix flake check -L
       - run: python3 tests/conformance.py
       - run: python3 tests/capture.py
+      - run: python3 tests/java-capture.py
+      - run: python3 tests/java-controls.py
+      - run: python3 tests/java-rebuild.py
       - name: Rebuild the project outputs
         run: |
           purifier_system=$(nix eval --impure --raw --expr builtins.currentSystem)
