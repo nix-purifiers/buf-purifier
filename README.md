@@ -115,6 +115,62 @@ covers the selected pinned Python/compiler/runtime SDK; it does not promise
 other Python ABIs, Java bindings, remote generator plugins or arbitrary schema
 namespaces that overlap other installed packages.
 
+## Generated Java packages
+
+Configure a native Java generator in `buf.gen.yaml`:
+
+```yaml
+version: v2
+plugins:
+  - protoc_builtin: java
+    out: gen/java
+```
+
+Then select that output in the named builder:
+
+```nix
+pkgs.buf-purifier.buildBufProject {
+  src = ./.;
+  javaPackage = {
+    groupId = "org.example";
+    artifactId = "schemas";
+    version = "1.0.0";
+    sourceDirectory = "gen/java";
+  };
+}
+```
+
+This compiles the Java files emitted by native Buf into a JAR and exports
+`projections.maven` and `projections.ivy`. Both views contain the generated
+package and its transitive Protobuf Java runtime. Read their immutable,
+identity-qualified versions from `projections.maven.catalog`; the package and
+the source-built SDK runtime each receive their own Nix identity.
+
+`packages.java-bindings` exposes the compiled package and its projections.
+`packages.java-runtime` exposes the compiler-matched SDK runtime and its own
+projections. The runtime is built from the same pinned Protobuf source as the
+native generator, including its well-known types, schema resources and license.
+Its source version, actual compiler version and Java runtime constants must
+agree. The pinned JDK compiles Java 17 class files; checks execute the pinned JVM.
+No Maven dependency resolution is needed to build these artifacts.
+
+`sourceDirectory` must stay under `gen/` and match a native
+`protoc_builtin: java` output. Configure Buf to emit required schema
+dependencies; well-known types come from the SDK runtime. Identical generated
+SDK types are reused only after checking their source bytes; inconsistent SDK
+types and runtime class collisions fail. An empty selection preserves existing
+outputs, including the schema resource views and optional Python package.
+
+Native generation, source hashes, class hashes, JAR bytes and SDK provenance are
+retained under each producer's `proof/`. Checks resolve both Maven and Ivy with
+ordinary offline Gradle, round-trip generated messages across two real schema
+revisions, and verify every generated class plus actual runtime class origins.
+They reject missing runtime/local classes, a genuinely compiled schema
+replacement, an actual older Protobuf runtime, inconsistent compiler SDKs,
+incorrect output ownership and SDK class collisions. Fresh native captures and
+direct producer/runtime/binding/projection/consumer rebuilds cover replay and
+reproducibility.
+
 ## Credits
 
 The purifier idea was inspired by nixcloud's

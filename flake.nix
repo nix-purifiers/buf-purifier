@@ -59,6 +59,16 @@
             doCheck = true;
             checkCommand = ''test -s "$out/gen/proof/v1/proof.pb.cc"'';
           };
+          java =
+            src: version:
+            p.buf-purifier.buildBufProject {
+              inherit src;
+              javaPackage = (import ./tests/java/package.nix) // {
+                inherit version;
+              };
+            };
+          java1 = java ./examples/java-projection "1.0.0";
+          java2 = java ./examples/java-projection-v2 "1.0.1";
         in
         {
           inherit (b.packages) environment project;
@@ -76,6 +86,12 @@
             projection = b.projections.resources;
           };
           cli = self.packages.${system}.default;
+          java-project = java1.packages.project;
+          java-project-v2 = java2.packages.project;
+          java-runtime = java1.packages.java-runtime;
+          java-generated = java1.packages.java-bindings;
+          java-generated-v2 = java2.packages.java-bindings;
+          java-bindings = import ./tests/java-projections.nix { pkgs = p; };
         }
       );
       formatter = forAll (system: (pkgsFor system).nixfmt-tree);

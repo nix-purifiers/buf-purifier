@@ -1,0 +1,5 @@
+syntax = "proto3";
+package purifier.proof.v1;
+option java_package = "org.nixpurifiers.proof.v1";
+option java_multiple_files = true;
+message Common { int32 value = 2; }
