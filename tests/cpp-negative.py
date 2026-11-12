@@ -8,6 +8,7 @@ producer=Path(model['producer']);rows=[]
 with tempfile.TemporaryDirectory() as temporary:
  root=Path(temporary);bad=root/'input'
  shutil.copytree(producer/'schemas',bad/'schemas')
+ for path in [bad,*bad.rglob('*')]:path.chmod(0o755 if path.is_dir() else 0o644)
  sdk=bad/'schemas/google/protobuf/timestamp.proto';sdk.parent.mkdir(parents=True,exist_ok=True);original=(Path(include)/'google/protobuf/timestamp.proto').read_bytes()
  sdk.write_bytes(original+b'\n// Controlled SDK schema mismatch\n')
  def reject(name,diagnostic):
