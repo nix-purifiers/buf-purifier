@@ -1,0 +1,19 @@
+{
+  "entries": [],
+  "extraInputs": [],
+  "inputs": {
+    "buf.gen.yaml": {
+      "sha256": "62bca2315509657203684b785cc9c9ec7458b01b987b24444bd79d902b9db4a9"
+    },
+    "buf.yaml": {
+      "sha256": "4f865e7217205a12a60303148587a3eceb46ddd05f65537ab96405c381356f36"
+    }
+  },
+  "native": {
+    "deps": [],
+    "version": "v2"
+  },
+  "purifier": "buf",
+  "sdk": "c9e559eb60ed103e07225d461b1e8e3b5d9f1e1c156089b61dbaefd6b627a8d0",
+  "version": 1
+}

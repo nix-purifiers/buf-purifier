@@ -21,6 +21,10 @@
   schemaEntrypoints ? [ ],
   pythonPackage ? null,
   javaPackage ? null,
+  goPackage ? null,
+  goProjector ? null,
+  goDependencies ? [ ],
+
   cppPackage ? null,
   nativeBuildInputs ? [ ],
   doCheck ? false,
@@ -132,7 +136,12 @@ let
       }
     )
     // lib.optionalAttrs (javaPackage != null) java.projections
+    // lib.optionalAttrs (goPackage != null) { go = golang.repository; }
     // lib.optionalAttrs (cppPackage != null) { cpp = cpp.package; };
+  golang = callPackage ../buf-go-products { } {
+    producer = builtProject;
+    inherit goPackage goProjector goDependencies;
+  };
   cpp = callPackage ../buf-cpp-products { } {
     producer = builtProject;
     inherit cppPackage;
@@ -160,6 +169,8 @@ let
       '';
 in
 assert javaPackage == null || java.validated;
+assert goPackage == null || golang.validated;
+
 assert cppPackage == null || cpp.validated;
 assert
   pythonPackage == null
@@ -192,6 +203,14 @@ assert
       projections = java.projections;
     };
     java-runtime = java.runtimePackage;
+  }
+  // lib.optionalAttrs (goPackage != null) {
+    go-bindings = golang.generated // {
+      projections.go = golang.repository;
+    };
+    go-runtime = golang.runtime // {
+      projections.go = golang.runtime;
+    };
   }
   // lib.optionalAttrs (cppPackage != null) { cpp-bindings = cpp.package; };
   tests = project;

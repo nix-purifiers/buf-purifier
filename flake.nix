@@ -5,11 +5,16 @@
     url = "github:nix-purifiers/purifier/v0.1.63";
     flake = false;
   };
+  inputs.go-projector = {
+    url = "github:nix-purifiers/go-purifier/v0.1.6";
+    inputs.nixpkgs.follows = "nixpkgs";
+  };
   outputs =
     {
       self,
       nixpkgs,
       purifier,
+      go-projector,
     }:
     let
       systems = [
@@ -85,6 +90,15 @@
             pkgs = p;
             projection = b.projections.resources;
           };
+          go-external = import ./tests/go-external.nix {
+            pkgs = p;
+            projector = go-projector.packages.${system}.cli;
+          };
+          go-bindings = import ./tests/go-products.nix {
+            pkgs = p;
+            projector = go-projector.packages.${system}.cli;
+          };
+
           cpp-bindings = import ./tests/cpp-products.nix { pkgs = p; };
           cli = self.packages.${system}.default;
           java-project = java1.packages.project;
