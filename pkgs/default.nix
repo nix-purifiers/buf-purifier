@@ -5,7 +5,7 @@
 }:
 pkgs.lib.makeScope pkgs.newScope (scope: {
   python = pkgs.python3.withPackages (p: [ p.pyyaml ]);
-  tool = pkgs.callPackage ./toolchain.nix { };
+  tool = pkgs.callPackage ./build-buf-project/toolchain.nix { };
   purifier = import (purifierSrc + "/nix/lib") { inherit (pkgs) lib; };
   sdkVersion = builtins.hashString "sha256" (
     builtins.toJSON {
@@ -19,7 +19,7 @@ pkgs.lib.makeScope pkgs.newScope (scope: {
     scope.tool
     pkgs.protobuf
   ];
-  nativeFetch = scope.callPackage ./fetch.nix { };
-  cli = scope.callPackage ./cli.nix { inherit nixpkgsSrc purifierSrc; };
-  buildBufProject = scope.callPackage ./build-project.nix { };
+  nativeFetch = scope.callPackage ./build-buf-project/fetch.nix { };
+  cli = scope.callPackage ./cli/default.nix { inherit nixpkgsSrc purifierSrc; };
+  buildBufProject = scope.callPackage ./build-buf-project/default.nix { };
 })

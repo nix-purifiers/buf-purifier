@@ -26,7 +26,9 @@
   checkCommand ? "",
 }:
 let
-  lock = purifier.checkLock (import ./read-lock.nix { inherit lib; } { inherit src lockFile; });
+  lock = purifier.checkLock (
+    import ../../lib-overlays/default/read-lock.nix { inherit lib; } { inherit src lockFile; }
+  );
   prepared = import ./environment.nix scope { inherit lock src fetchers; };
   source = lib.cleanSourceWith {
     inherit src;

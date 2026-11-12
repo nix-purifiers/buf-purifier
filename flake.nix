@@ -18,7 +18,7 @@
       ];
       forAll = nixpkgs.lib.genAttrs systems;
       overlay = final: prev: {
-        buf-purifier = import ./nix/scope.nix {
+        buf-purifier = import ./pkgs/default.nix {
           pkgs = final;
           nixpkgsSrc = nixpkgs;
           purifierSrc = purifier;
@@ -44,7 +44,7 @@
           meta.description = "Lock native Buf modules";
         };
       });
-      lib.buf-purifier.readLock = import ./nix/read-lock.nix { lib = nixpkgs.lib; };
+      lib.buf-purifier = (nixpkgs.lib.extend (import ./lib-overlays/default)).buf-purifier;
       checks = forAll (
         system:
         let
