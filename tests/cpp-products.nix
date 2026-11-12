@@ -65,6 +65,7 @@ pkgs.runCommand "buf-cpp-package-consumers"
         project(Consumer LANGUAGES CXX)
         set(CMAKE_POSITION_INDEPENDENT_CODE ON)
         find_package(proof 0.1.0 EXACT CONFIG REQUIRED)
+        find_package(proof 0.1.0 EXACT CONFIG REQUIRED)
         add_executable(consumer consumer.cc)
         target_link_libraries(consumer PRIVATE proof::proof ''${CMAKE_DL_LIBS})
       CMAKE
