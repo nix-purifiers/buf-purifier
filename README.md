@@ -175,3 +175,21 @@ reproducibility.
 
 The purifier idea was inspired by nixcloud's
 [cargo (libnix)](https://github.com/nixcloud/cargo).
+
+### C++ bindings
+
+`buildBufProject` accepts `cppPackage = { name = "proof"; version = "0.1.0"; };`.
+It exposes `packages.cpp-bindings` and `projections.cpp`, with generated headers,
+a shared library, pkg-config metadata and a CMake package (`proof::proof`).
+The side producer runs the selected SDK's native `protoc` on the exported schema
+closure, separately from the generators declared in `buf.gen.yaml`. The ordinary
+Buf producer retains its build identity. Captured schemas matching SDK schemas
+must have identical bytes; SDK message implementations come from the matching
+Protobuf library. Captured project and dependency messages compile into the new
+library. The package propagates its Protobuf SDK to Nix consumers.
+
+Use `buildInputs = [ built.packages.cpp-bindings ];` with pkg-config, or
+`find_package(proof 0.1.0 EXACT CONFIG REQUIRED)` and link `proof::proof` with
+CMake. This is a C++ API, with its selected compiler/runtime ABI. It supplies no
+C marshaling wrapper. `cpp-products.json` and `compile_commands.json` retain the
+native generation, schema hashes, SDK versions and compiler commands.
