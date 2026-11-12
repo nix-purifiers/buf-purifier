@@ -2,7 +2,7 @@
   description = "Locked, Nix-resolved Protobuf modules for Buf";
   inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
   inputs.purifier = {
-    url = "github:nix-purifiers/purifier";
+    url = "github:nix-purifiers/purifier/v0.1.63";
     flake = false;
   };
   outputs =
@@ -85,6 +85,7 @@
             pkgs = p;
             projection = b.projections.resources;
           };
+          cpp-bindings = import ./tests/cpp-products.nix { pkgs = p; };
           cli = self.packages.${system}.default;
           java-project = java1.packages.project;
           java-project-v2 = java2.packages.project;

@@ -21,6 +21,7 @@
   schemaEntrypoints ? [ ],
   pythonPackage ? null,
   javaPackage ? null,
+  cppPackage ? null,
   nativeBuildInputs ? [ ],
   doCheck ? false,
   checkCommand ? "",
@@ -130,7 +131,12 @@ let
         python3 = python;
       }
     )
-    // lib.optionalAttrs (javaPackage != null) java.projections;
+    // lib.optionalAttrs (javaPackage != null) java.projections
+    // lib.optionalAttrs (cppPackage != null) { cpp = cpp.package; };
+  cpp = callPackage ../buf-cpp-products { } {
+    producer = builtProject;
+    inherit cppPackage;
+  };
   java = callPackage ./java-projections.nix { } {
     producer = builtProject;
     inherit javaPackage;
@@ -154,6 +160,7 @@ let
       '';
 in
 assert javaPackage == null || java.validated;
+assert cppPackage == null || cpp.validated;
 assert
   pythonPackage == null
   || (
@@ -185,7 +192,8 @@ assert
       projections = java.projections;
     };
     java-runtime = java.runtimePackage;
-  };
+  }
+  // lib.optionalAttrs (cppPackage != null) { cpp-bindings = cpp.package; };
   tests = project;
   inherit release projections;
   fetches = lock.entries;

@@ -1,0 +1,8 @@
+cmake_minimum_required(VERSION 3.20)
+project(Consumer LANGUAGES CXX)
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)
+set(CMAKE_CXX_STANDARD 17)
+find_package(proof 0.1.0 EXACT CONFIG REQUIRED)
+find_package(proof 0.1.0 EXACT CONFIG REQUIRED)
+add_executable(consumer consumer.cc)
+target_link_libraries(consumer PRIVATE proof::proof ${CMAKE_DL_LIBS})
