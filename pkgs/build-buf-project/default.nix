@@ -26,6 +26,8 @@
   goDependencies ? [ ],
 
   cppPackage ? null,
+  rustPackage ? null,
+  rustProjector ? null,
   nativeBuildInputs ? [ ],
   doCheck ? false,
   checkCommand ? "",
@@ -137,10 +139,15 @@ let
     )
     // lib.optionalAttrs (javaPackage != null) java.projections
     // lib.optionalAttrs (goPackage != null) { go = golang.repository; }
-    // lib.optionalAttrs (cppPackage != null) { cpp = cpp.package; };
+    // lib.optionalAttrs (cppPackage != null) { cpp = cpp.package; }
+    // lib.optionalAttrs (rustPackage != null) { cargo = rust.repository; };
   golang = callPackage ../buf-go-products { } {
     producer = builtProject;
     inherit goPackage goProjector goDependencies;
+  };
+  rust = callPackage ../buf-rust-products { } {
+    producer = builtProject;
+    inherit rustPackage rustProjector;
   };
   cpp = callPackage ../buf-cpp-products { } {
     producer = builtProject;
@@ -172,6 +179,7 @@ assert javaPackage == null || java.validated;
 assert goPackage == null || golang.validated;
 
 assert cppPackage == null || cpp.validated;
+assert rustPackage == null || rust.validated;
 assert
   pythonPackage == null
   || (
@@ -212,7 +220,12 @@ assert
       projections.go = golang.runtime;
     };
   }
-  // lib.optionalAttrs (cppPackage != null) { cpp-bindings = cpp.package; };
+  // lib.optionalAttrs (cppPackage != null) { cpp-bindings = cpp.package; }
+  // lib.optionalAttrs (rustPackage != null) {
+    rust-bindings = rust.generated // {
+      projections.cargo = rust.repository;
+    };
+  };
   tests = project;
   inherit release projections;
   fetches = lock.entries;
