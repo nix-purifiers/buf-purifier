@@ -29,8 +29,13 @@ for index, case in enumerate(spec['cases']):
     (project/'.cargo/config.toml').write_text('[source.crates-io]\nreplace-with="provided"\n[source.provided]\nlocal-registry='+json.dumps(str(repository))+'\n')
     subprocess.run(['cargo','add','--offline',*[name+'@='+entries[name]['version'] for name in ['proof_schemas','prost']]],cwd=project,check=True)
     shutil.copy(Path(__file__).with_name('consumer.rs'),project/'src/main.rs')
-    with (out/f'build-{index}.jsonl').open('w') as log:
+    messages=Path(f'cargo-messages-{index}.raw.jsonl')
+    with messages.open('w') as log:
         subprocess.run(['cargo','build','--offline','--locked','--message-format=json'],cwd=project,stdout=log,check=True)
+    # Parallel native Cargo jobs can report identical events in a different
+    # order. Preserve every event and field, sorted in the immutable receipt.
+    events=[json.dumps(json.loads(line),sort_keys=True) for line in messages.read_text().splitlines()]
+    (out/f'build-{index}.jsonl').write_text('\n'.join(sorted(events))+'\n')
     result = subprocess.check_output([str(project/'target/debug'/('consumer_'+str(index)))],text=True).strip()
     expected = ['42:43:0a02082a1202082b','42:43:0a02102a1202082b'][index]
     assert result==expected,(result,expected)
