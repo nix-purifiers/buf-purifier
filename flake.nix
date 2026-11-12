@@ -98,6 +98,8 @@
             pkgs = p;
             projector = go-projector.packages.${system}.cli;
           };
+
+          cpp-bindings = import ./tests/cpp-products.nix { pkgs = p; };
           cli = self.packages.${system}.default;
           java-project = java1.packages.project;
           java-project-v2 = java2.packages.project;

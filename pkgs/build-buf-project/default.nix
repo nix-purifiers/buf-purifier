@@ -24,6 +24,8 @@
   goPackage ? null,
   goProjector ? null,
   goDependencies ? [ ],
+
+  cppPackage ? null,
   nativeBuildInputs ? [ ],
   doCheck ? false,
   checkCommand ? "",
@@ -134,10 +136,15 @@ let
       }
     )
     // lib.optionalAttrs (javaPackage != null) java.projections
-    // lib.optionalAttrs (goPackage != null) { go = golang.repository; };
+    // lib.optionalAttrs (goPackage != null) { go = golang.repository; }
+    // lib.optionalAttrs (cppPackage != null) { cpp = cpp.package; };
   golang = callPackage ../buf-go-products { } {
     producer = builtProject;
     inherit goPackage goProjector goDependencies;
+  };
+  cpp = callPackage ../buf-cpp-products { } {
+    producer = builtProject;
+    inherit cppPackage;
   };
   java = callPackage ./java-projections.nix { } {
     producer = builtProject;
@@ -163,6 +170,8 @@ let
 in
 assert javaPackage == null || java.validated;
 assert goPackage == null || golang.validated;
+
+assert cppPackage == null || cpp.validated;
 assert
   pythonPackage == null
   || (
@@ -202,7 +211,8 @@ assert
     go-runtime = golang.runtime // {
       projections.go = golang.runtime;
     };
-  };
+  }
+  // lib.optionalAttrs (cppPackage != null) { cpp-bindings = cpp.package; };
   tests = project;
   inherit release projections;
   fetches = lock.entries;
