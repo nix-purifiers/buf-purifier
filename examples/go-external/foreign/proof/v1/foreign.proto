@@ -1,0 +1,4 @@
+syntax = "proto3";
+package foreign.proof.v1;
+option go_package = "example.org/foreign/foreign/proof/v1";
+message Foreign { int32 value = 1; }

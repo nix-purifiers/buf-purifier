@@ -1,0 +1,10 @@
+syntax = "proto3";
+package purifier.proof.v1;
+option java_package = "org.nixpurifiers.proof.v1";
+option java_multiple_files = true;
+import "purifier/proof/v1/common.proto";
+import "google/protobuf/timestamp.proto";
+import "foreign/proof/v1/foreign.proto";
+message Answer { Common common = 1; google.protobuf.Timestamp timestamp = 2; foreign.proof.v1.Foreign foreign = 3; }
+
+option go_package = "example.org/proof/purifier/proof/v1";

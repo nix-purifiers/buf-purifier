@@ -74,7 +74,9 @@ let
       ''
         export HOME="$TMPDIR/home" GOCACHE="$TMPDIR/cache" GOPATH="$TMPDIR/go" GOTOOLCHAIN=local GOWORK=off GOPROXY=off GOSUMDB=off
         mkdir -p "$HOME"
-        python3 ${./generate.py} ${producer} "$out" ${spec} ${protobuf}/bin/protoc ${protobuf.dev}/include ${protoc-gen-go}/bin/protoc-gen-go ${go}/bin/go ${protoc-gen-go.src}
+        python3 ${./generate.py} ${producer} "$out" ${spec} ${protobuf}/bin/protoc ${protobuf.dev}/include ${protoc-gen-go}/bin/protoc-gen-go ${go}/bin/go ${protoc-gen-go.src} ${
+          lib.escapeShellArgs (map (i: i.repository.catalog) inputs)
+        }
       '';
   identity = runCommand "buf-go-module-identity" {
     inherit generated runtime;

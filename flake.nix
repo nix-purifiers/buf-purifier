@@ -90,6 +90,10 @@
             pkgs = p;
             projection = b.projections.resources;
           };
+          go-external = import ./tests/go-external.nix {
+            pkgs = p;
+            projector = go-projector.packages.${system}.cli;
+          };
           go-bindings = import ./tests/go-products.nix {
             pkgs = p;
             projector = go-projector.packages.${system}.cli;
