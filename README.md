@@ -222,3 +222,31 @@ Use `buildInputs = [ built.packages.cpp-bindings ];` with pkg-config, or
 CMake. This is a C++ API, with its selected compiler/runtime ABI. It supplies no
 C marshaling wrapper. `cpp-products.json` and `compile_commands.json` retain the
 native generation, schema hashes, SDK versions and compiler commands.
+
+### Generated Rust crates
+
+`buildBufProject` accepts an explicit crate name and owned schema entrypoints:
+
+```nix
+rustPackage = {
+  name = "proof_schemas";
+  entrypoints = [ "purifier/proof/v1/common.proto" "purifier/proof/v1/answer.proto" ];
+};
+rustProjector = args:
+  pkgs.callPackage (cargoPurifier + "/nix/lib/cargo-projections.nix")
+    (args // { purifier = pkgs.buf-purifier.purifier; });
+```
+
+Here `cargoPurifier` is the caller’s pinned native Cargo purifier source; the
+checks use its public `v0.1.7` source. The supplied projector receives the
+native generated crate, SDK vendor tree, and Cargo lock. It exports ordinary
+Cargo archives and a local registry through `projections.cargo` and
+`packages.rust-bindings.projections.cargo`, ready for `buildCargoProject`
+dependencies. The generated source crate is under `packages.rust-bindings/crate`.
+
+Native Prost and crate plugins produce the Rust modules. Cargo metadata from
+the generator SDK selects its matching Prost runtime versions; native Cargo
+creates the manifest, resolves offline against the SDK’s vendored sources, and
+packages the complete runtime closure. `rust-products.json` retains native
+schema dependency rules, descriptor and source hashes, and generator commands.
+The original Buf build keeps its derivation identity when the option is used.

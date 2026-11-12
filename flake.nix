@@ -9,12 +9,17 @@
     url = "github:nix-purifiers/go-purifier/v0.1.6";
     inputs.nixpkgs.follows = "nixpkgs";
   };
+  inputs.cargo-projector = {
+    url = "git+https://github.com/nix-purifiers/cargo-purifier?ref=refs/tags/v0.1.7";
+    flake = false;
+  };
   outputs =
     {
       self,
       nixpkgs,
       purifier,
       go-projector,
+      cargo-projector,
     }:
     let
       systems = [
@@ -89,6 +94,14 @@
           resources = import ./tests/resource-consumer.nix {
             pkgs = p;
             projection = b.projections.resources;
+          };
+          rust-bindings = import ./tests/rust-products.nix {
+            pkgs = p;
+            projector =
+              args:
+              p.callPackage (cargo-projector + "/nix/lib/cargo-projections.nix") (
+                args // { purifier = p.buf-purifier.purifier; }
+              );
           };
           go-external = import ./tests/go-external.nix {
             pkgs = p;
