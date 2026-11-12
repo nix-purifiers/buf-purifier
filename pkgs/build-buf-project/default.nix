@@ -133,7 +133,7 @@ let
     )
     // lib.optionalAttrs (javaPackage != null) java.projections
     // lib.optionalAttrs (cppPackage != null) { cpp = cpp.package; };
-  cpp = callPackage ../pkgs/buf-cpp-products { } {
+  cpp = callPackage ../buf-cpp-products { } {
     producer = builtProject;
     inherit cppPackage;
   };
