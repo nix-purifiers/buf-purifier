@@ -46,6 +46,9 @@ if not standard:
  value=int(re.search(r'^#define __cplusplus ([0-9]+)L',macros,re.M).group(1))
  if value<201103:raise ValueError('selected compiler default is older than C++11')
  standard='-std=c++'+str((value//100)%100)
+match=re.fullmatch(r'-std=(?:gnu|c)\+\+([0-9]+)',standard)
+if not match:raise ValueError('native compiler standard cannot be exported as a CMake feature')
+cmake_feature='cxx_std_'+match.group(1)
 shutil.copyfile(work/'build/compile_commands.json',out/'compile_commands.json')
 for header in generated.rglob('*.pb.h'):
  target=out/'include'/header.relative_to(generated);target.parent.mkdir(parents=True,exist_ok=True);shutil.copyfile(header,target)
@@ -55,7 +58,7 @@ config=lib/'cmake'/name;config.mkdir(parents=True,exist_ok=True)
 include(CMakeFindDependencyMacro)
 find_dependency(Protobuf {cmake_runtime_version} EXACT CONFIG REQUIRED)
 add_library({name}::{name} SHARED IMPORTED)
-set_target_properties({name}::{name} PROPERTIES IMPORTED_LOCATION "{library}" INTERFACE_INCLUDE_DIRECTORIES "{out}/include" INTERFACE_LINK_LIBRARIES protobuf::libprotobuf)
+set_target_properties({name}::{name} PROPERTIES IMPORTED_LOCATION "{library}" INTERFACE_INCLUDE_DIRECTORIES "{out}/include" INTERFACE_LINK_LIBRARIES protobuf::libprotobuf INTERFACE_COMPILE_FEATURES {cmake_feature})
 ''')
 model={'name':name,'version':version,'producer':str(producer),'librarySha256':hashlib.sha256(library.read_bytes()).hexdigest(),'abi':'c++','library':str(library.relative_to(out)),'compilerVersion':subprocess.check_output([protoc,'--version'],text=True).strip(),'runtimeVersion':runtime_version,'cmakeRuntimeVersion':cmake_runtime_version,'cxxStandard':standard,'schemas':models,'generated':[{'path':str(p.relative_to(generated)),'sha256':hashlib.sha256(p.read_bytes()).hexdigest()} for p in sorted(generated.rglob('*')) if p.is_file()]}
 (out/'cpp-products.json').write_text(json.dumps(model,sort_keys=True,indent=2)+'\n')
