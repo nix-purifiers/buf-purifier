@@ -2,14 +2,19 @@
   description = "Locked, Nix-resolved Protobuf modules for Buf";
   inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
   inputs.purifier = {
-    url = "github:nix-purifiers/purifier";
+    url = "github:nix-purifiers/purifier/v0.1.63";
     flake = false;
+  };
+  inputs.go-projector = {
+    url = "github:nix-purifiers/go-purifier/v0.1.6";
+    inputs.nixpkgs.follows = "nixpkgs";
   };
   outputs =
     {
       self,
       nixpkgs,
       purifier,
+      go-projector,
     }:
     let
       systems = [
@@ -84,6 +89,10 @@
           resources = import ./tests/resource-consumer.nix {
             pkgs = p;
             projection = b.projections.resources;
+          };
+          go-bindings = import ./tests/go-products.nix {
+            pkgs = p;
+            projector = go-projector.packages.${system}.cli;
           };
           cli = self.packages.${system}.default;
           java-project = java1.packages.project;

@@ -175,3 +175,32 @@ reproducibility.
 
 The purifier idea was inspired by nixcloud's
 [cargo (libnix)](https://github.com/nixcloud/cargo).
+
+### Go module bindings
+
+The optional Go projection runs the native Go plugin on explicitly selected
+exported schemas. The schemas' `go_package` declarations determine imports;
+the native plugin must place all selected files within the declared module.
+
+```nix
+goPackage = {
+  modulePath = "example.org/proof";
+  entrypoints = [ "purifier/proof/v1/common.proto" "purifier/proof/v1/answer.proto" ];
+};
+goProjector = goPurifier.packages.${system}.cli;
+```
+
+`goProjector` is a caller-supplied native Go purifier CLI. It exports actual
+module ZIPs and metadata through its existing module projection command.
+`goDependencies` accepts existing typed Go producer inputs for imported modules.
+The matching Protobuf Go runtime comes from the same source as the selected
+`protoc-gen-go` package. The package's Go minimum is read with the native Go
+manifest editor. No SDK version table is added.
+
+`projections.go` is a native file module proxy, including the runtime.
+`packages.go-bindings` retains generated code, the native descriptor set and
+`go-products.json`; it also carries `projections.go` for direct composition.
+The module versions bind the native producer, SDK runtime, projector and supplied
+repositories. Ordinary Buf output keeps its derivation identity. The additional
+released Go purifier flake input supplies the conformance-test projector;
+applications can provide their own matching CLI and Go SDK.
