@@ -15,7 +15,32 @@ for path in sorted(schemas.rglob('*.proto')):
   owner='captured-schema';sources.append(str(relative))
  models.append({'path':str(relative),'owner':owner,'sha256':hashlib.sha256(path.read_bytes()).hexdigest()})
 if not sources:raise ValueError('no non-SDK schemas to compile')
-subprocess.run([protoc,'-I'+str(schemas),'-I'+str(sdk_include),'--cpp_out='+str(generated),*sources],cwd=schemas,check=True)
+# Native Make dependency output includes SDK imports which buf export omits.
+observed={(m['owner'],m['path']):m for m in models}
+for source in sources:
+ dependency=out/'native-dependencies'/Path(source).with_suffix('.d')
+ dependency.parent.mkdir(parents=True,exist_ok=True)
+ subprocess.run([protoc,'-I'+str(schemas),'-I'+str(sdk_include),'--cpp_out='+str(generated),'--dependency_out='+str(dependency),source],cwd=schemas,check=True)
+ raw=dependency.read_text().replace('\\\n',' ')
+ for entry in shlex.split(raw.split(':',1)[1]):
+  path=Path(entry)
+  if not path.is_absolute():
+   path=next((base/path for base in (schemas,sdk_include) if (base/path).is_file()),None)
+   if path is None:raise ValueError('native compiler input is missing: '+entry)
+  if path.is_relative_to(schemas):
+   relative=path.relative_to(schemas)
+   if not path.resolve().is_relative_to(schemas.resolve()):raise ValueError('exported compiler input escapes schema root')
+   sdk=sdk_include/relative
+   owner='sdk' if sdk.is_file() else 'captured-schema'
+   if sdk.is_file() and sdk.read_bytes()!=path.read_bytes():raise ValueError('captured schema conflicts with selected SDK: '+str(relative))
+  elif path.is_relative_to(sdk_include):
+   relative=path.relative_to(sdk_include);owner='sdk'
+  else:raise ValueError('native compiler input has no declared owner: '+str(path))
+  record={'path':str(relative),'owner':owner,'sha256':hashlib.sha256(path.read_bytes()).hexdigest()}
+  key=(owner,str(relative))
+  if key in observed and observed[key]!=record:raise ValueError('native schema input changed during compilation')
+  observed[key]=record
+models=[observed[key] for key in sorted(observed)]
 runtime_version=subprocess.check_output(['pkg-config','--modversion','protobuf'],text=True).strip()
 lib=out/'lib';lib.mkdir();library=lib/('lib'+name+suffix)
 work=Path(os.environ['TMPDIR'])/'cpp-build';work.mkdir()
