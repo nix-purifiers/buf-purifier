@@ -15,7 +15,8 @@ let
   first = build src1 "1.0.0";
   second = build src2 "1.0.1";
   mismatched =
-    pkgs.buf-purifier.callPackage ../nix/java-projections.nix { protobuf = pkgs.protobuf_35; }
+    pkgs.buf-purifier.callPackage ../pkgs/build-buf-project/java-projections.nix
+      { protobuf = pkgs.protobuf_35; }
       {
         producer = first.packages.project;
         javaPackage = import ./java/package.nix;

@@ -23,7 +23,7 @@ let
     );
   };
   validated = runCommand "buf-native-selection-validated" { } ''
-    ${python}/bin/python3 ${../buf_purifier/validation.py} ${writeText "buf-lock.json" (builtins.toJSON checked.data)} ${selectionSource}
+    ${python}/bin/python3 ${../../buf_purifier/validation.py} ${writeText "buf-lock.json" (builtins.toJSON checked.data)} ${selectionSource}
     touch "$out"
   '';
   nativeURLFetch =

@@ -17,16 +17,16 @@
 stdenvNoCC.mkDerivation {
   pname = "buf-purifier";
   version = "0.1.0";
-  src = ../.;
+  src = ../..;
   nativeBuildInputs = [ makeWrapper ];
   dontBuild = true;
   installPhase = ''
     mkdir -p "$out/bin" "$out/lib/buf-purifier"
-    cp -r buf_purifier nix native "$out/lib/buf-purifier/"
+    cp -r buf_purifier pkgs lib-overlays native "$out/lib/buf-purifier/"
     install -m755 bin/buf-purifier "$out/bin/buf-purifier"
     ln -s ${protobuf}/bin/protoc "$out/bin/protoc"
     for file in realize release; do
-      substituteInPlace "$out/lib/buf-purifier/nix/$file.nix" --replace-fail '@nixpkgs@' '${nixpkgsSrc}' --replace-fail '@purifier@' '${purifierSrc}'
+      substituteInPlace "$out/lib/buf-purifier/pkgs/build-buf-project/$file.nix" --replace-fail '@nixpkgs@' '${nixpkgsSrc}' --replace-fail '@purifier@' '${purifierSrc}'
     done
     wrapProgram "$out/bin/buf-purifier" \
       --prefix PATH : ${

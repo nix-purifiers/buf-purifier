@@ -106,7 +106,7 @@ def main_impl():
         expression = (
             "import "
             + json.dumps(
-                os.environ["BUF_PURIFIER_SDK"] + "/lib/buf-purifier/nix/release.nix"
+                os.environ["BUF_PURIFIER_SDK"] + "/lib/buf-purifier/pkgs/build-buf-project/release.nix"
             )
             + " {root="
             + json.dumps(str(root))
